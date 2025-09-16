@@ -3,15 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInDefaultValues } from "@/lib/constants";
+import { signUpDefaultValues } from "@/lib/constants";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { signInWithCredentials } from "@/lib/actions/user.actions";
+import { signUpUser } from "@/lib/actions/user.actions";
 import { useSearchParams } from "next/navigation";
 
 const CredentialsSignInForm = () => {
-  const [data, action] = useActionState(signInWithCredentials, {
+  const [data, action] = useActionState(signUpUser, {
     success: false,
     message: "",
   });
@@ -19,7 +19,7 @@ const CredentialsSignInForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const SignInButton = () => {
+  const SignUpButton = () => {
     const { pending } = useFormStatus();
     return (
       <Button
@@ -47,11 +47,11 @@ const CredentialsSignInForm = () => {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
               </svg>
-              Signing In...
+              Creating Account...
             </>
           ) : (
             <>
-              Continue Shopping
+              Start Shopping
               <svg
                 className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none"
@@ -78,6 +78,39 @@ const CredentialsSignInForm = () => {
 
       <div className="space-y-2">
         <Label
+          htmlFor="name"
+          className="text-sm font-medium text-foreground/90"
+        >
+          Full Name
+        </Label>
+        <div className="relative">
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            defaultValue={signUpDefaultValues.name}
+            className="h-12 rounded-xl pl-10 pr-4 text-base bg-background border-input hover:border-primary/50 focus:border-primary transition-colors duration-200"
+            placeholder="Enter your full name"
+          />
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label
           htmlFor="email"
           className="text-sm font-medium text-foreground/90"
         >
@@ -88,9 +121,8 @@ const CredentialsSignInForm = () => {
             id="email"
             name="email"
             type="email"
-            required
             autoComplete="email"
-            defaultValue={signInDefaultValues.email}
+            defaultValue={signUpDefaultValues.email}
             className="h-12 rounded-xl pl-10 pr-4 text-base bg-background border-input hover:border-primary/50 focus:border-primary transition-colors duration-200"
             placeholder="you@example.com"
           />
@@ -111,30 +143,22 @@ const CredentialsSignInForm = () => {
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label
-            htmlFor="password"
-            className="text-sm font-medium text-foreground/90"
-          >
-            Password
-          </Label>
-          <Link
-            href="/forgot-password"
-            className="text-xs text-primary hover:text-primary/80 underline-offset-2 hover:underline"
-          >
-            Forgot password?
-          </Link>
-        </div>
+        <Label
+          htmlFor="password"
+          className="text-sm font-medium text-foreground/90"
+        >
+          Password
+        </Label>
         <div className="relative">
           <Input
             id="password"
             name="password"
             type="password"
             required
-            autoComplete="password"
-            defaultValue={signInDefaultValues.password}
+            autoComplete="new-password"
+            defaultValue={signUpDefaultValues.password}
             className="h-12 rounded-xl pl-10 pr-4 text-base bg-background border-input hover:border-primary/50 focus:border-primary transition-colors duration-200"
-            placeholder="Enter your password"
+            placeholder="Minimum 8 characters"
           />
           <svg
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
@@ -152,18 +176,52 @@ const CredentialsSignInForm = () => {
         </div>
       </div>
 
-      {/* Remember benefits */}
+      <div className="space-y-2">
+        <Label
+          htmlFor="confirmPassword"
+          className="text-sm font-medium text-foreground/90"
+        >
+          Confirm Password
+        </Label>
+        <div className="relative">
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            required
+            autoComplete="new-password"
+            defaultValue={signUpDefaultValues.confirmPassword}
+            className="h-12 rounded-xl pl-10 pr-4 text-base bg-background border-input hover:border-primary/50 focus:border-primary transition-colors duration-200"
+            placeholder="Re-enter your password"
+          />
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Benefits reminder */}
       <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
-        <p className="font-medium mb-1">Your member benefits await:</p>
+        <p className="font-medium mb-1">Member benefits:</p>
         <ul className="space-y-0.5">
-          <li>• View order history and tracking</li>
-          <li>• Access saved items and wishlists</li>
-          <li>• Exclusive member-only discounts</li>
+          <li>• Exclusive discounts on premium cheese tools</li>
+          <li>• Early access to new products</li>
+          <li>• Free cheese pairing guide</li>
         </ul>
       </div>
 
       <div className="pt-1">
-        <SignInButton />
+        <SignUpButton />
       </div>
 
       {data && !data.success && (
@@ -195,19 +253,18 @@ const CredentialsSignInForm = () => {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="px-2 bg-card text-muted-foreground">
-            New to our store?
+            Or continue with
           </span>
         </div>
       </div>
 
       <p className="text-center text-sm text-muted-foreground">
-        Join our community of cheese enthusiasts
-        <br />
+        Already have an account?{" "}
         <Link
-          href="/sign-up"
+          href="/sign-in"
           className="font-semibold text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors duration-200"
         >
-          Create an account
+          Sign in
         </Link>
       </p>
     </form>
